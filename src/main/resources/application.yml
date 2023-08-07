@@ -1,0 +1,1 @@
+server:  servlet:    context-path: /vending-machinespringdoc:  api-docs:    enabled: true    path: '/v3/api-docs'  default-produces-media-type: application/json  swagger-ui:    disable-swagger-default-url: true    path: '/swagger-ui'    urls:      - name: Vending Machine API        url: '/v3/api-docs'vending-machine:  url: 'http://localhost:8080'
