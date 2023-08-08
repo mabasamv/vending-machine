@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vincent.assessment.util.VendingMachineUtil.*;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Configuration
 @OpenAPIDefinition(
@@ -38,8 +32,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 )
 public class OpenApiConfig {
 
-    @Value("${vending-machine.url}")
-    private String url;
+    @Value("${swagger.url}")
+    private String swaggerUrl;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -50,7 +44,7 @@ public class OpenApiConfig {
     public List<Server> servers() {
         List<Server> servers = new ArrayList<>();
         Server server = new Server();
-        server.setUrl(url);
+        server.setUrl(swaggerUrl);
         server.setDescription("Local: vending-machine");
         servers.add(server);
         return servers;

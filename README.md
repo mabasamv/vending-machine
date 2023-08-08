@@ -38,3 +38,11 @@ Click the `Run` or `Debug` icon or alternatively select it from the dropdown men
 
 ### Swagger URL
 http://localhost:8080/vending-machine/swagger-ui/index.html
+
+## Accessing the database
+
+The database will be available on http://localhost:8080/vending-machine/h2-console
+- Driver Class: org.h2.Driver
+- JDBC URL: jdbc:h2:mem:vending-machine
+- Username: sa
+- Password: password

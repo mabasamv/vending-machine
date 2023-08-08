@@ -45,6 +45,7 @@ public class VendingMachineImpl implements IVendingMachine {
     public long selectItemAndGetPrice(Item item) {
         if (itemInventory.hasItem(item)) {
             currentItem = item;
+            printStats();
             return currentItem.getPrice();
         }
         throw new SoldOutException("Sold Out, Please buy another item");
@@ -53,6 +54,7 @@ public class VendingMachineImpl implements IVendingMachine {
     @Override
     public void insertMoney(Money money) {
         currentBalance = currentBalance + money.getDenomination();
+        log.info("R{} added to the cash inventory, current balance is R{}", money.getDenomination(), currentBalance);
         cashInventory.add(money);
     }
 
@@ -62,12 +64,12 @@ public class VendingMachineImpl implements IVendingMachine {
         totalSales = totalSales + currentItem.getPrice();
 
         List<Money> change = collectChange();
+        log.info("Change is R{}", change);
 
         return new Bucket<Item, List<Money>>(item, change);
     }
 
-    private Item collectItem() throws NotSufficientChangeException,
-            NotFullPaidException {
+    private Item collectItem() throws NotSufficientChangeException, NotFullPaidException {
         if (isFullPaid()) {
             if (hasSufficientChange()) {
                 itemInventory.deduct(currentItem);
@@ -157,11 +159,10 @@ public class VendingMachineImpl implements IVendingMachine {
     }
 
     public void printStats() {
-        System.out.println("Total Sales : " + totalSales);
-        System.out.println("Current Item Inventory : " + itemInventory);
-        System.out.println("Current Cash Inventory : " + cashInventory);
+        log.info("Total Sales : {}", totalSales);
+        log.info("Current Item Inventory : {}", itemInventory);
+        log.info("Current Cash Inventory : {}", cashInventory);
     }
-
 
     private boolean hasSufficientChange() {
         return hasSufficientChangeForAmount(currentBalance - currentItem.getPrice());

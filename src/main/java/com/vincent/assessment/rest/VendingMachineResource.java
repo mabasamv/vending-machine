@@ -24,9 +24,8 @@ public class VendingMachineResource {
 
     @GetMapping("check-price")
     public long checkPrice(@PathParam("item") Item item) {
-        log.info("sdssdd");
         long price = vendingMachine.selectItemAndGetPrice(item);
-        log.info("Price of {} is R{}", price, item.getName());
+        log.info("Price of {} is R{}", item.getName(), price);
         return price;
     }
 
