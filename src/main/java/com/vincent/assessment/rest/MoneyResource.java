@@ -1,8 +1,8 @@
 package com.vincent.assessment.rest;
 
-import com.vincent.assessment.persistance.entity.MoneyEntity;
+import com.vincent.assessment.model.Money;
+import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.service.IMoneyService;
-import com.vincent.assessment.type.MoneyType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/money/")
-@Tag(name = "Money Resource", description = "APIs to view pre-configured amounts and their denominations")
+@Tag(name = "Money Resource")
 public class MoneyResource {
 
     private final IMoneyService moneyService;
@@ -22,15 +22,16 @@ public class MoneyResource {
         this.moneyService = moneyService;
     }
 
-    @Operation(description = "Returns the amount for a selected denomination")
-    @GetMapping("amount")
-    public Integer getAmountByDenomination(final MoneyType moneyType) {
-        return moneyService.getAmountByDenomination(moneyType);
+    @Operation(description = "Returns all the configured denominations")
+    @GetMapping("denominations")
+    public Iterable<Money> getAmounts() {
+        return moneyService.getAll();
     }
 
-    @Operation(description = "Returns all the configured amounts")
-    @GetMapping("amounts")
-    public Iterable<MoneyEntity> getAmounts() {
-        return moneyService.getAmounts();
+    @Operation(description = "Returns the amount for a selected denomination")
+    @GetMapping("amount")
+    public Money getAmountByDenomination(final MoneyType moneyType) {
+        return moneyService.getByDenomination(moneyType);
     }
+
 }

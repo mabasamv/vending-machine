@@ -9,11 +9,11 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "item_inventory")
+@Table(name = "inventory")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ItemInventoryEntity {
+public class InventoryEntity {
 
     @Id
     @Column(name = "item_code", nullable = false)

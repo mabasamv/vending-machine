@@ -1,4 +1,4 @@
-package com.vincent.assessment.type;
+package com.vincent.assessment.model;
 
 import lombok.Getter;
 

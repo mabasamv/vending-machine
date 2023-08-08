@@ -1,14 +1,13 @@
 package com.vincent.assessment.service;
 
+import com.vincent.assessment.model.Money;
+import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.persistance.entity.MoneyEntity;
 import com.vincent.assessment.persistance.repository.MoneyRepository;
-import com.vincent.assessment.type.MoneyType;
+import com.vincent.assessment.util.MoneyMappers;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -16,22 +15,27 @@ public class MoneyService implements IMoneyService {
 
     private final MoneyRepository repository;
 
+    private final MoneyMappers mapper = Mappers.getMapper(MoneyMappers.class);
+
     public MoneyService(final MoneyRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Iterable<MoneyEntity> getAmounts() {
+    public Iterable<Money> getAll() {
         log.info("Retrieving all amounts configured in the database");
-        return repository.findAll();
+        Iterable<MoneyEntity> iterable = repository.findAll();
+
+        return mapper.map(iterable);
     }
 
     @Override
-    public Integer getAmountByDenomination(final MoneyType moneyType) {
-        Integer amount = repository.findByDenomination(moneyType.getDenomination());
+    public Money getByDenomination(final MoneyType moneyType) {
+        MoneyEntity entity = repository.findByDenomination(moneyType.getDenomination());
+        Money money = mapper.map(entity);
 
-        log.info("Denomination: {} - Amount: {}", moneyType.getDenomination(), amount);
+        log.info("Denomination: {} - Amount: {}", moneyType.getDenomination(), money.getAmount());
 
-        return amount;
+        return money;
     }
 }

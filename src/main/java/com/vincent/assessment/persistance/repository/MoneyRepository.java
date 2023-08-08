@@ -9,6 +9,6 @@ import java.util.Date;
 
 public interface MoneyRepository extends CrudRepository<MoneyEntity, Long> {
 
-    @Query(value = "SELECT me.amount FROM MoneyEntity me WHERE me.denomination = :denomination")
-    Integer findByDenomination(@Param("denomination") String denomination);
+    @Query(value = "SELECT me FROM MoneyEntity me WHERE me.denomination = :denomination")
+    MoneyEntity findByDenomination(@Param("denomination") String denomination);
 }

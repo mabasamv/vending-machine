@@ -1,9 +1,8 @@
 package com.vincent.assessment.rest;
 
-import com.vincent.assessment.model.ItemInventory;
+import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.PurchaseRequest;
-import com.vincent.assessment.persistance.entity.ItemInventoryEntity;
-import com.vincent.assessment.service.IItemInventoryService;
+import com.vincent.assessment.service.IInventoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -14,18 +13,18 @@ import javax.websocket.server.PathParam;
 @Slf4j
 @RestController
 @RequestMapping("/inventory/")
-@Tag(name = "Item Inventory Resource")
-public class ItemInventoryResource {
+@Tag(name = "Inventory Resource")
+public class InventoryResource {
 
-    private final IItemInventoryService inventoryService;
+    private final IInventoryService inventoryService;
 
-    public ItemInventoryResource(final IItemInventoryService inventoryService) {
+    public InventoryResource(final IInventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
 
     @Operation(description = "Creates an item in the inventory")
     @PostMapping("add-item")
-    public void addItem(@RequestBody ItemInventory item) {
+    public void addItem(@RequestBody Inventory item) {
         inventoryService.addItem(item);
     }
 
@@ -36,7 +35,7 @@ public class ItemInventoryResource {
     }
 
     @Operation(description = "Deduct quantity from an item in the inventory")
-    @PutMapping("purchase-item")
+    @PostMapping("purchase-item")
     public void deduct(@RequestBody PurchaseRequest request) {
         inventoryService.purchase(request);
     }
@@ -49,13 +48,13 @@ public class ItemInventoryResource {
 
     @Operation(description = "Gets item in the inventory")
     @GetMapping("get-item")
-    public ItemInventory getItem(@PathParam("itemCode") Long itemCode) {
+    public Inventory getItem(@PathParam("itemCode") Long itemCode) {
         return inventoryService.getItem(itemCode);
     }
 
     @Operation(description = "Gets all items in the inventory")
     @GetMapping("get-all-items")
-    public Iterable<ItemInventory> getItems() {
+    public Iterable<Inventory> getItems() {
         return inventoryService.getAllItems();
     }
 

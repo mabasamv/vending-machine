@@ -1,13 +1,11 @@
 package com.vincent.assessment.service;
 
-import com.vincent.assessment.persistance.entity.MoneyEntity;
-import com.vincent.assessment.type.MoneyType;
-
-import java.util.List;
+import com.vincent.assessment.model.Money;
+import com.vincent.assessment.model.MoneyType;
 
 public interface IMoneyService {
 
-    Iterable<MoneyEntity> getAmounts();
+    Iterable<Money> getAll();
 
-    Integer getAmountByDenomination(final MoneyType moneyType);
+    Money getByDenomination(final MoneyType moneyType);
 }

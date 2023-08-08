@@ -6,7 +6,7 @@ create table money
     primary key (id)
 )
 
-create table item_inventory
+create table inventory
 (
     item_code  bigint       not null,
     name       varchar(255) not null,
