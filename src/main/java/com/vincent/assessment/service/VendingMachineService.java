@@ -3,8 +3,8 @@ package com.vincent.assessment.service;
 import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.NotSufficientChangeException;
 import com.vincent.assessment.exception.SoldOutException;
-import com.vincent.assessment.type.Money;
-import com.vincent.assessment.type.Item;
+import com.vincent.assessment.type.MoneyType;
+import com.vincent.assessment.type.ItemType;
 import com.vincent.assessment.util.Bucket;
 import com.vincent.assessment.util.Inventory;
 import lombok.extern.slf4j.Slf4j;
@@ -16,33 +16,34 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class VendingMachineImpl implements IVendingMachine {
+public class VendingMachineService implements IVendingMachineService {
 
-    private Inventory<Money> cashInventory = new Inventory<Money>();
-    private Inventory<Item> itemInventory = new Inventory<Item>();
+    private Inventory<MoneyType> cashInventory = new Inventory<MoneyType>();
+    private Inventory<ItemType> itemInventory = new Inventory<ItemType>();
     private long totalSales;
-    private Item currentItem;
+    private ItemType currentItem;
     private long currentBalance;
 
-    public VendingMachineImpl() {
+
+    public VendingMachineService() {
         initialize();
     }
 
     private void initialize() {
         //initialize machine with 10 money of each denomination
         //and 5 cans of each Item
-        for (Money c : Money.values()) {
+        for (MoneyType c : MoneyType.values()) {
             cashInventory.put(c, 10);
         }
 
-        for (Item i : Item.values()) {
+        for (ItemType i : ItemType.values()) {
             itemInventory.put(i, 10);
         }
 
     }
 
     @Override
-    public long selectItemAndGetPrice(Item item) {
+    public long selectItemAndGetPrice(ItemType item) {
         if (itemInventory.hasItem(item)) {
             currentItem = item;
             printStats();
@@ -52,24 +53,24 @@ public class VendingMachineImpl implements IVendingMachine {
     }
 
     @Override
-    public void insertMoney(Money money) {
-        currentBalance = currentBalance + money.getDenomination();
-        log.info("R{} added to the cash inventory, current balance is R{}", money.getDenomination(), currentBalance);
+    public void insertMoney(MoneyType money) {
+        currentBalance = currentBalance + money.getAmount();
+        log.info("R{} added to the cash inventory, current balance is R{}", money.getAmount(), currentBalance);
         cashInventory.add(money);
     }
 
     @Override
-    public Bucket<Item, List<Money>> collectItemAndChange() {
-        Item item = collectItem();
+    public Bucket<ItemType, List<MoneyType>> collectItemAndChange() {
+        ItemType item = collectItem();
         totalSales = totalSales + currentItem.getPrice();
 
-        List<Money> change = collectChange();
+        List<MoneyType> change = collectChange();
         log.info("Change is R{}", change);
 
-        return new Bucket<Item, List<Money>>(item, change);
+        return new Bucket<ItemType, List<MoneyType>>(item, change);
     }
 
-    private Item collectItem() throws NotSufficientChangeException, NotFullPaidException {
+    private ItemType collectItem() throws NotSufficientChangeException, NotFullPaidException {
         if (isFullPaid()) {
             if (hasSufficientChange()) {
                 itemInventory.deduct(currentItem);
@@ -82,9 +83,9 @@ public class VendingMachineImpl implements IVendingMachine {
         throw new NotFullPaidException("Price not full paid, remaining : ", remainingBalance);
     }
 
-    private List<Money> collectChange() {
+    private List<MoneyType> collectChange() {
         long changeAmount = currentBalance - currentItem.getPrice();
-        List<Money> change = getChange(changeAmount);
+        List<MoneyType> change = getChange(changeAmount);
         updateCashInventory(change);
         currentBalance = 0;
         currentItem = null;
@@ -92,8 +93,8 @@ public class VendingMachineImpl implements IVendingMachine {
     }
 
     @Override
-    public List<Money> change() {
-        List<Money> refund = getChange(currentBalance);
+    public List<MoneyType> change() {
+        List<MoneyType> refund = getChange(currentBalance);
         updateCashInventory(refund);
         currentBalance = 0;
         currentItem = null;
@@ -109,35 +110,35 @@ public class VendingMachineImpl implements IVendingMachine {
     }
 
 
-    private List<Money> getChange(long amount) throws NotSufficientChangeException {
-        List<Money> changes = Collections.EMPTY_LIST;
+    private List<MoneyType> getChange(long amount) throws NotSufficientChangeException {
+        List<MoneyType> changes = Collections.EMPTY_LIST;
 
         if (amount > 0) {
-            changes = new ArrayList<Money>();
+            changes = new ArrayList<MoneyType>();
             long balance = amount;
             while (balance > 0) {
-                if (balance >= Money.R20.getDenomination() && cashInventory.hasItem(Money.R20)) {
-                    changes.add(Money.R20);
-                    balance = balance - Money.R20.getDenomination();
+                if (balance >= MoneyType.R20.getAmount() && cashInventory.hasItem(MoneyType.R20)) {
+                    changes.add(MoneyType.R20);
+                    balance = balance - MoneyType.R20.getAmount();
                     continue;
-                } else if (balance >= Money.R10.getDenomination() && cashInventory.hasItem(Money.R10)) {
-                    changes.add(Money.R10);
-                    balance = balance - Money.R10.getDenomination();
-                    continue;
-
-                } else if (balance >= Money.R5.getDenomination() && cashInventory.hasItem(Money.R5)) {
-                    changes.add(Money.R5);
-                    balance = balance - Money.R5.getDenomination();
+                } else if (balance >= MoneyType.R10.getAmount() && cashInventory.hasItem(MoneyType.R10)) {
+                    changes.add(MoneyType.R10);
+                    balance = balance - MoneyType.R10.getAmount();
                     continue;
 
-                } else if (balance >= Money.R2.getDenomination() && cashInventory.hasItem(Money.R2)) {
-                    changes.add(Money.R2);
-                    balance = balance - Money.R2.getDenomination();
+                } else if (balance >= MoneyType.R5.getAmount() && cashInventory.hasItem(MoneyType.R5)) {
+                    changes.add(MoneyType.R5);
+                    balance = balance - MoneyType.R5.getAmount();
                     continue;
 
-                } else if (balance >= Money.R1.getDenomination() && cashInventory.hasItem(Money.R1)) {
-                    changes.add(Money.R1);
-                    balance = balance - Money.R1.getDenomination();
+                } else if (balance >= MoneyType.R2.getAmount() && cashInventory.hasItem(MoneyType.R2)) {
+                    changes.add(MoneyType.R2);
+                    balance = balance - MoneyType.R2.getAmount();
+                    continue;
+
+                } else if (balance >= MoneyType.R1.getAmount() && cashInventory.hasItem(MoneyType.R1)) {
+                    changes.add(MoneyType.R1);
+                    balance = balance - MoneyType.R1.getAmount();
                     continue;
 
                 } else {
@@ -179,8 +180,8 @@ public class VendingMachineImpl implements IVendingMachine {
         return hasChange;
     }
 
-    private void updateCashInventory(List<Money> change) {
-        for (Money c : change) {
+    private void updateCashInventory(List<MoneyType> change) {
+        for (MoneyType c : change) {
             cashInventory.deduct(c);
         }
     }

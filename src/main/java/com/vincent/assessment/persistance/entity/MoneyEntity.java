@@ -1,4 +1,4 @@
-package com.vincent.assessment.persistance.model;
+package com.vincent.assessment.persistance.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,16 +9,20 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "item")
+@Table(name = "money")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ItemEntity {
+public class MoneyEntity {
 
     @Id
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private Integer price;
 
+    @Column(name = "denomination", nullable = false)
+    private String denomination;
+
+    @Column(name = "amount", nullable = false)
+    private Integer amount;
 }
