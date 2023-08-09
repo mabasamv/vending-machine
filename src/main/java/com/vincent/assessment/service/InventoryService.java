@@ -6,6 +6,7 @@ import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.model.PurchaseRequest;
+import com.vincent.assessment.model.PurchaseResponse;
 import com.vincent.assessment.persistance.entity.InventoryEntity;
 import com.vincent.assessment.persistance.repository.InventoryRepository;
 import com.vincent.assessment.util.InventoryMappers;
@@ -33,9 +34,8 @@ public class InventoryService implements IInventoryService {
 
     @Override
     public void addItem(final Inventory item) {
+        log.info("Adding/updating item to the inventory");
         InventoryEntity entityItem = mapper.map(item);
-
-        log.info("Saving item to the inventory");
 
         repository.save(entityItem);
     }
@@ -47,43 +47,32 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public void purchase(final PurchaseRequest purchaseRequest) {
-        log.info("Purchasing item");
-
+    public PurchaseResponse purchase(final PurchaseRequest purchaseRequest) {
+        log.info("Purchase item");
         Inventory item = getItem(purchaseRequest.getItemCode());
-        log.info("Purchasing item {}", item);
-
         int quantity = getQuantity(purchaseRequest.getItemCode());
-        log.info("Quantity: {}", quantity);
 
         if (quantity > 0) {
             List<MoneyType> amount = purchaseRequest.getDenominations();
+
             int totalAmount = totalAmount(amount);
-            log.info("Total Amount: {}", totalAmount);
-
             if (totalAmount >= item.getUnitPrice()) {
-                log.info("Process and give change");
-
-                Integer totalChange = totalChange(changeService);
-                log.info("Total change: {}", totalChange);
-
-                if (totalAmount > totalChange)
+                if (totalAmount > totalChange(changeService))
                     throw new NotSufficientChangeException("No sufficient change in vending machine, transaction will be cancelled");
                 else
-                    processPurchase(item, totalAmount);
-            } else {
-                long remaining = item.getUnitPrice() - totalAmount;
-                throw new NotFullPaidException("Insufficient amount provided for purchase", remaining);
-            }
-        } else {
-            throw new SoldOutException("Items sold out");
-        }
+                    return processPurchase(item, totalAmount);
+            } else
+                throw new NotFullPaidException("Insufficient amount provided for purchase", item.getUnitPrice() - totalAmount);
+        } else
+            throw new SoldOutException("Item sold out");
     }
 
     @Override
     public Integer getQuantity(final Long itemCode) {
-        InventoryEntity item = repository.findById(itemCode).get();
-        log.info("ItemCode: {} - {} - has {} items in the inventory", item.getItemCode(), item.getName(), item.getQuantity());
+        InventoryEntity item = repository.findById(itemCode).orElse(null);
+        assert item != null;
+
+        log.info("{} has {} items in the inventory", item.getName(), item.getQuantity());
 
         return item.getQuantity();
     }
@@ -91,31 +80,32 @@ public class InventoryService implements IInventoryService {
     @Override
     public Inventory getItem(final Long itemCode) {
         log.info("Retrieving item in the inventory");
-        InventoryEntity entity = repository.findById(itemCode).get();
+        InventoryEntity item = repository.findById(itemCode).orElse(null);
+        assert item != null;
 
-        return mapper.map(entity);
+        return mapper.map(item);
     }
 
     @Override
     public Iterable<Inventory> getAllItems() {
-
         Iterable<InventoryEntity> items = repository.findAll();
 
         return mapper.map(items);
     }
 
-    private void processPurchase(final Inventory item, final int totalAmount) {
-        log.info("Deduct quantity from product");
+    private PurchaseResponse processPurchase(final Inventory item, final int totalAmount) {
         deductQuantity(item);
-
         int change = totalAmount - item.getUnitPrice();
-        log.info("Change: R{}", change);
-
         deductChange(changeService, change);
         log.info("Transaction successful");
+
+        return PurchaseResponse.builder()
+                .responseMessage("Transaction successful. Collect item and change of R"+ change)
+                .change(change).build();
     }
 
     private void deductQuantity(final Inventory item) {
+        log.info("Deduct quantity from product");
         Integer deduct = item.getQuantity() - 1;
         item.setQuantity(deduct);
 

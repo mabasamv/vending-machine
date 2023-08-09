@@ -4,9 +4,11 @@ import com.vincent.assessment.model.Change;
 import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.service.IChangeService;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @UtilityClass
 public class VendingMachineUtil {
 
@@ -29,6 +31,7 @@ public class VendingMachineUtil {
     }
 
     public static void deductChange(final IChangeService changeService, final int totalChange) {
+        log.info("Change R{}", totalChange);
         Iterable<Change> iterableChange = changeService.getAll();
 
         for (Change change : iterableChange) {

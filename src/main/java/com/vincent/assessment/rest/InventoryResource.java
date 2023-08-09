@@ -2,6 +2,7 @@ package com.vincent.assessment.rest;
 
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.PurchaseRequest;
+import com.vincent.assessment.model.PurchaseResponse;
 import com.vincent.assessment.service.IInventoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,8 +37,8 @@ public class InventoryResource {
 
     @Operation(description = "Deduct quantity from an item in the inventory")
     @PostMapping("purchase-item")
-    public void deduct(@RequestBody PurchaseRequest request) {
-        service.purchase(request);
+    public PurchaseResponse purchase(@RequestBody PurchaseRequest request) {
+        return service.purchase(request);
     }
 
     @Operation(description = "Get item quantity in the inventory")

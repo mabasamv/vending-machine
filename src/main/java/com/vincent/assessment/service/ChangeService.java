@@ -23,10 +23,7 @@ public class ChangeService implements IChangeService {
 
     @Override
     public Iterable<Change> getAll() {
-        log.info("Retrieving all amounts configured in the database");
-        Iterable<ChangeEntity> iterable = repository.findAll();
-
-        return mapper.map(iterable);
+        return mapper.map(repository.findAll());
     }
 
     @Override
@@ -41,9 +38,7 @@ public class ChangeService implements IChangeService {
 
     @Override
     public void loadChange(final Change change) {
-        log.info("Loading change");
         ChangeEntity entity = mapper.map(change);
-
         repository.save(entity);
     }
 }
