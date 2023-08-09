@@ -1,16 +1,22 @@
 package com.vincent.assessment.util;
 
 import com.vincent.assessment.model.Change;
+import com.vincent.assessment.model.ErrorResponse;
 import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.service.IChangeService;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
 @UtilityClass
 public class VendingMachineUtil {
+
+    public static final String NOT_FULLY_PAID = "NOT_FULLY_PAID";
+    public static final String NO_SUFFICIENT_CHANGE = "NO_SUFFICIENT_CHANGE";
+    public static final String SOLD_OUT = "SOLD_OUT";
 
     public static Integer totalAmount(final List<MoneyType> amount) {
         int totalAmount = 0;
@@ -42,5 +48,13 @@ public class VendingMachineUtil {
                 break;
             }
         }
+    }
+
+    public static ErrorResponse getErrorResponse(String message, String status) {
+        return ErrorResponse.builder()
+                .status(status)
+                .timestamp(new Date().toString())
+                .message(message)
+                .build();
     }
 }

@@ -1,7 +1,7 @@
 package com.vincent.assessment.service;
 
 import com.vincent.assessment.exception.NotFullPaidException;
-import com.vincent.assessment.exception.NotSufficientChangeException;
+import com.vincent.assessment.exception.NoSufficientChangeException;
 import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.MoneyType;
@@ -47,24 +47,34 @@ public class InventoryService implements IInventoryService {
     }
 
     @Override
-    public PurchaseResponse purchase(final PurchaseRequest purchaseRequest) {
-        log.info("Purchase item");
-        Inventory item = getItem(purchaseRequest.getItemCode());
-        int quantity = getQuantity(purchaseRequest.getItemCode());
+    public PurchaseResponse purchase(final PurchaseRequest purchaseRequest) throws NotFullPaidException, NoSufficientChangeException, SoldOutException, Exception {
+        try {
+            log.info("Purchase item");
+            Inventory item = getItem(purchaseRequest.getItemCode());
+            int quantity = getQuantity(purchaseRequest.getItemCode());
 
-        if (quantity > 0) {
-            List<MoneyType> amount = purchaseRequest.getDenominations();
+            if (quantity > 0) {
+                List<MoneyType> amount = purchaseRequest.getDenominations();
 
-            int totalAmount = totalAmount(amount);
-            if (totalAmount >= item.getUnitPrice()) {
-                if (totalAmount > totalChange(changeService))
-                    throw new NotSufficientChangeException("No sufficient change in vending machine, transaction will be cancelled");
-                else
-                    return processPurchase(item, totalAmount);
+                int totalAmount = totalAmount(amount);
+                if (totalAmount >= item.getUnitPrice()) {
+                    if (totalAmount > totalChange(changeService))
+                        throw new NoSufficientChangeException("No sufficient change in vending machine, transaction will be cancelled");
+                    else
+                        return processPurchase(item, totalAmount);
+                } else
+                    throw new NotFullPaidException("Insufficient amount provided for purchase");
             } else
-                throw new NotFullPaidException("Insufficient amount provided for purchase", item.getUnitPrice() - totalAmount);
-        } else
-            throw new SoldOutException("Item sold out");
+                throw new SoldOutException("Item sold out");
+        } catch (NoSufficientChangeException ex) {
+            throw new NoSufficientChangeException(ex.getMessage());
+        } catch (NotFullPaidException ex) {
+            throw new NotFullPaidException(ex.getMessage());
+        } catch (SoldOutException ex) {
+            throw new SoldOutException(ex.getMessage());
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
     }
 
     @Override
@@ -100,7 +110,7 @@ public class InventoryService implements IInventoryService {
         log.info("Transaction successful");
 
         return PurchaseResponse.builder()
-                .responseMessage("Transaction successful. Collect item and change of R"+ change)
+                .responseMessage("Transaction successful. Collect item and change of R" + change)
                 .change(change).build();
     }
 

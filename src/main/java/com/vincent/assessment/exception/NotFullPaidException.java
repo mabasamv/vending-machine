@@ -1,21 +1,12 @@
 package com.vincent.assessment.exception;
 
+import lombok.Getter;
+
+@Getter
 public class NotFullPaidException extends RuntimeException {
-    private String message;
-    private long remaining;
+    private final String message;
 
-    public NotFullPaidException(String message, long remaining) {
+    public NotFullPaidException(final String message) {
         this.message = message;
-        this.remaining = remaining;
     }
-
-    public long getRemaining() {
-        return remaining;
-    }
-
-    @Override
-    public String getMessage() {
-        return message + remaining;
-    }
-
 }
