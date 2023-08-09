@@ -1,8 +1,8 @@
-create table money
+create table change
 (
     id           bigint       not null,
     denomination varchar(255) not null,
-    amount       integer      not null,
+    total_amount       integer      not null,
     primary key (id)
 )
 

@@ -1,8 +1,8 @@
-INSERT INTO money(id, denomination, amount) VALUES (1, 'R1', 1);
-INSERT INTO money(id, denomination, amount) VALUES (2, 'R2', 2);
-INSERT INTO money(id, denomination, amount) VALUES (3, 'R5', 5);
-INSERT INTO money(id, denomination, amount) VALUES (4, 'R10', 10);
-INSERT INTO money(id, denomination, amount) VALUES (5, 'R20', 20);
+INSERT INTO change(id, denomination, total_amount) VALUES (1, 'R1', 20);
+INSERT INTO change(id, denomination, total_amount) VALUES (2, 'R2', 50);
+INSERT INTO change(id, denomination, total_amount) VALUES (3, 'R5', 100);
+INSERT INTO change(id, denomination, total_amount) VALUES (4, 'R10', 200);
+INSERT INTO change(id, denomination, total_amount) VALUES (5, 'R20', 400);
 
 INSERT INTO inventory(item_code, name, unit_price, quantity) VALUES (1, 'Chips', 15, 3);
 INSERT INTO inventory(item_code, name, unit_price, quantity) VALUES (2, 'Chocolates', 15, 5);

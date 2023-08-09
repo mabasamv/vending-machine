@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class PurchaseResponse {
     private String responseMessage;
+    private Integer change;
 }

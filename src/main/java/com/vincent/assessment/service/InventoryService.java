@@ -1,10 +1,13 @@
 package com.vincent.assessment.service;
 
+import com.vincent.assessment.exception.NotFullPaidException;
+import com.vincent.assessment.exception.NotSufficientChangeException;
+import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.model.Inventory;
+import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.model.PurchaseRequest;
 import com.vincent.assessment.persistance.entity.InventoryEntity;
 import com.vincent.assessment.persistance.repository.InventoryRepository;
-import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.util.InventoryMappers;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
@@ -12,16 +15,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.vincent.assessment.util.VendingMachineUtil.*;
+
 @Slf4j
 @Service
 public class InventoryService implements IInventoryService {
 
     private final InventoryRepository repository;
 
+    private final IChangeService changeService;
     private final InventoryMappers mapper = Mappers.getMapper(InventoryMappers.class);
 
-    public InventoryService(final InventoryRepository repository) {
+    public InventoryService(final InventoryRepository repository, final IChangeService changeService) {
         this.repository = repository;
+        this.changeService = changeService;
     }
 
     @Override
@@ -46,18 +53,30 @@ public class InventoryService implements IInventoryService {
         Inventory item = getItem(purchaseRequest.getItemCode());
         log.info("Purchasing item {}", item);
 
-        List<MoneyType> denominations = purchaseRequest.getDenominations();
-        int totalAmount = 0;
-        for (MoneyType mt: denominations) {
-            totalAmount = totalAmount + mt.getAmount();
-        }
+        int quantity = getQuantity(purchaseRequest.getItemCode());
+        log.info("Quantity: {}", quantity);
 
-        log.info("Total Amount: {}", totalAmount);
+        if (quantity > 0) {
+            List<MoneyType> amount = purchaseRequest.getDenominations();
+            int totalAmount = totalAmount(amount);
+            log.info("Total Amount: {}", totalAmount);
 
-        if(totalAmount >= item.getUnitPrice() && item.getQuantity() >0) {
-            log.info("Proceed with payment and give change");
+            if (totalAmount >= item.getUnitPrice()) {
+                log.info("Process and give change");
+
+                Integer totalChange = totalChange(changeService);
+                log.info("Total change: {}", totalChange);
+
+                if (totalAmount > totalChange)
+                    throw new NotSufficientChangeException("No sufficient change in vending machine, transaction will be cancelled");
+                else
+                    processPurchase(item, totalAmount);
+            } else {
+                long remaining = item.getUnitPrice() - totalAmount;
+                throw new NotFullPaidException("Insufficient amount provided for purchase", remaining);
+            }
         } else {
-            log.info("Transaction failed!");
+            throw new SoldOutException("Items sold out");
         }
     }
 
@@ -83,5 +102,23 @@ public class InventoryService implements IInventoryService {
         Iterable<InventoryEntity> items = repository.findAll();
 
         return mapper.map(items);
+    }
+
+    private void processPurchase(final Inventory item, final int totalAmount) {
+        log.info("Deduct quantity from product");
+        deductQuantity(item);
+
+        int change = totalAmount - item.getUnitPrice();
+        log.info("Change: R{}", change);
+
+        deductChange(changeService, change);
+        log.info("Transaction successful");
+    }
+
+    private void deductQuantity(final Inventory item) {
+        Integer deduct = item.getQuantity() - 1;
+        item.setQuantity(deduct);
+
+        addItem(item);
     }
 }
