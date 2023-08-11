@@ -3,6 +3,7 @@ package com.vincent.assessment.advice;
 import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.NoSufficientChangeException;
 import com.vincent.assessment.exception.SoldOutException;
+import com.vincent.assessment.exception.VendingMachineException;
 import com.vincent.assessment.model.ErrorResponse;
 import com.vincent.assessment.rest.InventoryResource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 @RestControllerAdvice(assignableTypes = InventoryResource.class)
 public class InventoryResourceAdvice {
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(VendingMachineException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleVendingMachineExceptions(final Exception e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());

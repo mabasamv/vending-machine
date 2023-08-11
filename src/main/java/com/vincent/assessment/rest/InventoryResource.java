@@ -1,8 +1,5 @@
 package com.vincent.assessment.rest;
 
-import com.vincent.assessment.exception.NotFullPaidException;
-import com.vincent.assessment.exception.NoSufficientChangeException;
-import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.PurchaseRequest;
 import com.vincent.assessment.model.PurchaseResponse;
@@ -40,7 +37,7 @@ public class InventoryResource {
 
     @Operation(description = "Deduct quantity from an item in the inventory")
     @PostMapping("purchase-item")
-    public PurchaseResponse purchase(@RequestBody PurchaseRequest request) throws NotFullPaidException, NoSufficientChangeException, SoldOutException, Exception {
+    public PurchaseResponse purchase(@RequestBody PurchaseRequest request) {
         return service.purchase(request);
     }
 

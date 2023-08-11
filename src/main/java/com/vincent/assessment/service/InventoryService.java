@@ -1,8 +1,9 @@
 package com.vincent.assessment.service;
 
-import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.NoSufficientChangeException;
+import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.SoldOutException;
+import com.vincent.assessment.exception.VendingMachineException;
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.model.PurchaseRequest;
@@ -10,6 +11,7 @@ import com.vincent.assessment.model.PurchaseResponse;
 import com.vincent.assessment.persistance.entity.InventoryEntity;
 import com.vincent.assessment.persistance.repository.InventoryRepository;
 import com.vincent.assessment.util.InventoryMappers;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
@@ -46,8 +48,9 @@ public class InventoryService implements IInventoryService {
         repository.deleteById(itemCode);
     }
 
+    @SneakyThrows
     @Override
-    public PurchaseResponse purchase(final PurchaseRequest purchaseRequest) throws NotFullPaidException, NoSufficientChangeException, SoldOutException, Exception {
+    public PurchaseResponse purchase(final PurchaseRequest purchaseRequest) {
         try {
             log.info("Purchase item");
             Inventory item = getItem(purchaseRequest.getItemCode());
@@ -73,7 +76,7 @@ public class InventoryService implements IInventoryService {
         } catch (SoldOutException ex) {
             throw new SoldOutException(ex.getMessage());
         } catch (Exception ex) {
-            throw new Exception(ex.getMessage());
+            throw new VendingMachineException(ex.getMessage());
         }
     }
 
