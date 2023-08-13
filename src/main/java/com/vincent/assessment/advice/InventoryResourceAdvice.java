@@ -5,7 +5,6 @@ import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.exception.VendingMachineException;
 import com.vincent.assessment.model.ErrorResponse;
-import com.vincent.assessment.rest.InventoryResource;
 import com.vincent.assessment.rest.VendingMachineResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
