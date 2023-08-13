@@ -6,6 +6,7 @@ import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.exception.VendingMachineException;
 import com.vincent.assessment.model.ErrorResponse;
 import com.vincent.assessment.rest.InventoryResource;
+import com.vincent.assessment.rest.VendingMachineResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,11 +18,11 @@ import static com.vincent.assessment.util.VendingMachineUtil.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@RestControllerAdvice(assignableTypes = InventoryResource.class)
+@RestControllerAdvice(assignableTypes = VendingMachineResource.class)
 public class InventoryResourceAdvice {
     @ExceptionHandler(VendingMachineException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public final ErrorResponse handleVendingMachineExceptions(final Exception e) {
+    public final ErrorResponse handleVendingMachineExceptions(final VendingMachineException e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
         log.error(message, e.getMessage());
         return getErrorResponse(message, INTERNAL_SERVER_ERROR.getReasonPhrase());
@@ -29,7 +30,7 @@ public class InventoryResourceAdvice {
 
     @ExceptionHandler(NotFullPaidException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public final ErrorResponse handleNotFullPaidExceptions(final Exception e) {
+    public final ErrorResponse handleNotFullPaidExceptions(final NotFullPaidException e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
         log.error(message, e.getMessage());
         return getErrorResponse(message, NOT_FULLY_PAID);
@@ -37,7 +38,7 @@ public class InventoryResourceAdvice {
 
     @ExceptionHandler(NoSufficientChangeException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public final ErrorResponse handleNoSufficientChangeExceptions(final Exception e) {
+    public final ErrorResponse handleNoSufficientChangeExceptions(final NoSufficientChangeException e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
         log.error(message, e.getMessage());
         return getErrorResponse(message, NO_SUFFICIENT_CHANGE);
@@ -45,7 +46,7 @@ public class InventoryResourceAdvice {
 
     @ExceptionHandler(SoldOutException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public final ErrorResponse handleSoldOutExceptions(final Exception e) {
+    public final ErrorResponse handleSoldOutExceptions(final SoldOutException e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
         log.error(message, e.getMessage());
         return getErrorResponse(message, SOLD_OUT);
