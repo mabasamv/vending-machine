@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = VendingMachineResource.class)
-public class InventoryResourceAdvice {
+public class VendingMachineResourceAdvice {
     @ExceptionHandler(VendingMachineException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleVendingMachineExceptions(final VendingMachineException e) {
