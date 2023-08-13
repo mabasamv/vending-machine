@@ -1,7 +1,7 @@
 package com.vincent.assessment.service;
 
-import com.vincent.assessment.model.PettyCash;
 import com.vincent.assessment.model.MoneyType;
+import com.vincent.assessment.model.PettyCash;
 
 public interface IPettyCashService {
 
