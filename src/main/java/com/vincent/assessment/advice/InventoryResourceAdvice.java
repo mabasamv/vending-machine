@@ -23,7 +23,7 @@ public class InventoryResourceAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleVendingMachineExceptions(final Exception e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
-        log.error(message, e);
+        log.error(message, e.getMessage());
         return getErrorResponse(message, INTERNAL_SERVER_ERROR.getReasonPhrase());
     }
 
@@ -31,7 +31,7 @@ public class InventoryResourceAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleNotFullPaidExceptions(final Exception e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
-        log.error(message, e);
+        log.error(message, e.getMessage());
         return getErrorResponse(message, NOT_FULLY_PAID);
     }
 
@@ -39,7 +39,7 @@ public class InventoryResourceAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleNoSufficientChangeExceptions(final Exception e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
-        log.error(message, e);
+        log.error(message, e.getMessage());
         return getErrorResponse(message, NO_SUFFICIENT_CHANGE);
     }
 
@@ -47,7 +47,7 @@ public class InventoryResourceAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public final ErrorResponse handleSoldOutExceptions(final Exception e) {
         final String message = Optional.of(e.getMessage()).orElse(e.getClass().getSimpleName());
-        log.error(message, e);
+        log.error(message, e.getMessage());
         return getErrorResponse(message, SOLD_OUT);
     }
 }

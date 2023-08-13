@@ -12,11 +12,11 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "change")
+@Table(name = "petty_cash")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class ChangeEntity {
+public class PettyCashEntity {
 
     @Id
     @Column(name = "id", nullable = false)

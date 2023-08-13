@@ -1,9 +1,10 @@
 package com.vincent.assessment.util;
 
-import com.vincent.assessment.model.Change;
+import com.vincent.assessment.model.PettyCash;
 import com.vincent.assessment.model.ErrorResponse;
 import com.vincent.assessment.model.MoneyType;
-import com.vincent.assessment.service.IChangeService;
+import com.vincent.assessment.service.IPettyCashService;
+import com.vincent.assessment.service.PettyCashService;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,31 +27,70 @@ public class VendingMachineUtil {
         return totalAmount;
     }
 
-    public static Integer totalChange(final IChangeService changeService) {
-        Iterable<Change> iterableChange = changeService.getAll();
+    public static Integer totalChange(final IPettyCashService changeService) {
+        Iterable<PettyCash> iterableChange = changeService.getAll();
 
         int totalChange = 0;
-        for (Change change : iterableChange) {
-            totalChange = totalChange + change.getTotalAmount();
+        for (PettyCash pettyCash : iterableChange) {
+            totalChange = totalChange + pettyCash.getTotalAmount();
         }
         return totalChange;
     }
 
-    public static void deductChange(final IChangeService changeService, final int totalChange) {
+    public static void deductChange(final IPettyCashService changeService, final int totalChange) {
         log.info("Change R{}", totalChange);
-        Iterable<Change> iterableChange = changeService.getAll();
+        Iterable<PettyCash> iterableChange = changeService.getAll();
 
-        for (Change change : iterableChange) {
-            if (change.getTotalAmount() >= totalChange) {
-                change.setTotalAmount(change.getTotalAmount() - totalChange);
+        for (PettyCash pettyCash : iterableChange) {
+            if (pettyCash.getTotalAmount() >= totalChange) {
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() - totalChange);
 
-                changeService.loadChange(change);
+                changeService.loadCash(pettyCash);
                 break;
             }
         }
     }
 
-    public static ErrorResponse getErrorResponse(String message, String status) {
+    public void saveCash(final IPettyCashService pettyCashService, final List<MoneyType> denominations) {
+        for (MoneyType denomination : denominations) {
+            if (denomination.getDenomination().equals(MoneyType.R1.getDenomination())) {
+                PettyCash pettyCash = pettyCashService.getByDenomination(denomination);
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() + MoneyType.R1.getAmount());
+
+                pettyCashService.loadCash(pettyCash);
+            }
+
+            if (denomination.getDenomination().equals(MoneyType.R2.getDenomination())) {
+                PettyCash pettyCash = pettyCashService.getByDenomination(denomination);
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() + MoneyType.R2.getAmount());
+
+                pettyCashService.loadCash(pettyCash);
+            }
+
+            if (denomination.getDenomination().equals(MoneyType.R5.getDenomination())) {
+                PettyCash pettyCash = pettyCashService.getByDenomination(denomination);
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() + MoneyType.R5.getAmount());
+
+                pettyCashService.loadCash(pettyCash);
+            }
+
+            if (denomination.getDenomination().equals(MoneyType.R10.getDenomination())) {
+                PettyCash pettyCash = pettyCashService.getByDenomination(denomination);
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() + MoneyType.R10.getAmount());
+
+                pettyCashService.loadCash(pettyCash);
+            }
+
+            if (denomination.getDenomination().equals(MoneyType.R20.getDenomination())) {
+                PettyCash pettyCash = pettyCashService.getByDenomination(denomination);
+                pettyCash.setTotalAmount(pettyCash.getTotalAmount() + MoneyType.R20.getAmount());
+
+                pettyCashService.loadCash(pettyCash);
+            }
+        }
+    }
+
+    public static ErrorResponse getErrorResponse(final String message, final String status) {
         return ErrorResponse.builder()
                 .status(status)
                 .timestamp(new Date().toString())

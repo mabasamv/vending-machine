@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Change {
+public class PettyCash {
 
     private Long id;
     private String denomination;

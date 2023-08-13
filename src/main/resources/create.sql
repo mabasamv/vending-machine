@@ -1,4 +1,4 @@
-create table change
+create table petty_cash
 (
     id           bigint       not null,
     denomination varchar(255) not null,

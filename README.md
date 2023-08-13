@@ -4,7 +4,7 @@ This project simulates a vending machine, it should be able to perform the follo
 1.	Start up with preconfigured items as well as petty cash.
 2.	Allow a user to add items to be purchased.
 3.	Facilitate payment and store petty cash by means of known currency denominations.
-4.	Issue change by known currency denominations.
+4.	Issue pettyCash by known currency denominations.
 5.	Adjust available quantity of items and petty cash.
 
 ## Getting started

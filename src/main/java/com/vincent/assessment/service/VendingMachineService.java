@@ -4,10 +4,7 @@ import com.vincent.assessment.exception.NoSufficientChangeException;
 import com.vincent.assessment.exception.NotFullPaidException;
 import com.vincent.assessment.exception.SoldOutException;
 import com.vincent.assessment.exception.VendingMachineException;
-import com.vincent.assessment.model.Inventory;
-import com.vincent.assessment.model.MoneyType;
-import com.vincent.assessment.model.PurchaseRequest;
-import com.vincent.assessment.model.PurchaseResponse;
+import com.vincent.assessment.model.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,11 +18,11 @@ import static com.vincent.assessment.util.VendingMachineUtil.*;
 public class VendingMachineService implements IVendingMachineService {
 
     private final InventoryService inventoryService;
-    private final IChangeService changeService;
+    private final IPettyCashService pettyCashService;
 
-    public VendingMachineService(final InventoryService inventoryService, final IChangeService changeService) {
+    public VendingMachineService(final InventoryService inventoryService, final IPettyCashService pettyCashService) {
         this.inventoryService = inventoryService;
-        this.changeService = changeService;
+        this.pettyCashService = pettyCashService;
     }
 
     @SneakyThrows
@@ -41,10 +38,12 @@ public class VendingMachineService implements IVendingMachineService {
 
                 int totalAmount = totalAmount(amount);
                 if (totalAmount >= item.getUnitPrice()) {
-                    if (totalAmount > totalChange(changeService))
+                    if (totalAmount > totalChange(pettyCashService))
                         throw new NoSufficientChangeException("No sufficient change in vending machine, transaction will be cancelled");
-                    else
+                    else {
+                        saveCash(pettyCashService, purchaseRequest.getDenominations());
                         return processPurchase(item, totalAmount);
+                    }
                 } else
                     throw new NotFullPaidException("Insufficient amount provided for purchase");
             } else
@@ -63,7 +62,7 @@ public class VendingMachineService implements IVendingMachineService {
     private PurchaseResponse processPurchase(final Inventory item, final int totalAmount) {
         deductQuantity(item);
         int change = totalAmount - item.getUnitPrice();
-        deductChange(changeService, change);
+        deductChange(pettyCashService, change);
         log.info("Transaction successful");
 
         return PurchaseResponse.builder()
