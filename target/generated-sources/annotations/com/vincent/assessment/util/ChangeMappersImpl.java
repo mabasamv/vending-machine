@@ -1,13 +1,14 @@
 package com.vincent.assessment.util;
 
 import com.vincent.assessment.model.Change;
+import com.vincent.assessment.model.Change.ChangeBuilder;
 import com.vincent.assessment.persistance.entity.ChangeEntity;
 import java.util.ArrayList;
 import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-08-12T03:34:46+0200",
+    date = "2023-08-13T12:00:32+0200",
     comments = "version: 1.3.0.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
 )
 public class ChangeMappersImpl implements ChangeMappers {
@@ -15,15 +16,15 @@ public class ChangeMappersImpl implements ChangeMappers {
     @Override
     public Change map(ChangeEntity source) {
 
-        Change change = new Change();
+        ChangeBuilder change = Change.builder();
 
         if ( source != null ) {
-            change.setId( source.getId() );
-            change.setDenomination( source.getDenomination() );
-            change.setTotalAmount( source.getTotalAmount() );
+            change.id( source.getId() );
+            change.denomination( source.getDenomination() );
+            change.totalAmount( source.getTotalAmount() );
         }
 
-        return change;
+        return change.build();
     }
 
     @Override

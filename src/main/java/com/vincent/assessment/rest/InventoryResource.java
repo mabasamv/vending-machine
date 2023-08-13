@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,6 +26,12 @@ public class InventoryResource {
     @PostMapping("add-item")
     public void addItem(@RequestBody Inventory item) {
         service.addItem(item);
+    }
+
+    @Operation(description = "Adds multiple items in the inventory")
+    @PostMapping("add-multiple-item")
+    public void addItems(@RequestBody List<Inventory> items) {
+        service.addItems(items);
     }
 
     @Operation(description = "Removes an item in the inventory")

@@ -8,18 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class InventoryService implements IInventoryService {
 
     private final InventoryRepository repository;
 
-    private final IChangeService changeService;
     private final InventoryMappers mapper = Mappers.getMapper(InventoryMappers.class);
 
-    public InventoryService(final InventoryRepository repository, final IChangeService changeService) {
+    public InventoryService(final InventoryRepository repository) {
         this.repository = repository;
-        this.changeService = changeService;
     }
 
     @Override
@@ -29,6 +29,15 @@ public class InventoryService implements IInventoryService {
 
         repository.save(entityItem);
     }
+
+    @Override
+    public void addItems(final List<Inventory> items) {
+        log.info("Adding multiple items to the inventory");
+        List<InventoryEntity> entityItem = mapper.map(items);
+
+        repository.saveAll(entityItem);
+    }
+
 
     @Override
     public void removeItem(final Long itemCode) {

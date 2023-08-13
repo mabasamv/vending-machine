@@ -37,4 +37,10 @@ public class ChangeResource {
     public void loadChange(final @RequestBody Change change) {
         service.loadChange(change);
     }
+
+    @Operation(description = "Gets all change in the vending machine")
+    @GetMapping("all-change")
+    public Iterable<Change> getAll() {
+        return service.getAll();
+    }
 }
