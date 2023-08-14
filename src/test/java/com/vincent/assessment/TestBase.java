@@ -1,7 +1,8 @@
 package com.vincent.assessment;
 
-import com.vincent.assessment.model.PettyCash;
 import com.vincent.assessment.model.MoneyType;
+import com.vincent.assessment.model.PettyCash;
+import com.vincent.assessment.model.PurchaseResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +44,17 @@ public class TestBase {
         pettyCashList.add(pettyCash5);
 
         return pettyCashList;
+    }
+/*    protected PurchaseRequest purchaseRequest() {
+        return PurchaseRequest.builder()
+                .
+                .build();
+    }*/
+
+    protected PurchaseResponse purchaseResponseOK() {
+        return PurchaseResponse.builder()
+                .responseMessage("Purchase successful")
+                .change(5)
+                .build();
     }
 }
