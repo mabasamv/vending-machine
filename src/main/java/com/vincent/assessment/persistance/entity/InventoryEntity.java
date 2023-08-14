@@ -1,9 +1,6 @@
 package com.vincent.assessment.persistance.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +9,11 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "inventory")
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "inventory")
 public class InventoryEntity {
 
     @Id

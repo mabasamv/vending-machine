@@ -2,32 +2,33 @@ package com.vincent.assessment.util;
 
 import com.vincent.assessment.model.Inventory;
 import com.vincent.assessment.persistance.entity.InventoryEntity;
+import com.vincent.assessment.persistance.entity.InventoryEntity.InventoryEntityBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-08-14T09:37:25+0200",
-    comments = "version: 1.3.0.Final, compiler: javac, environment: Java 11.0.16.1 (Oracle Corporation)"
+    date = "2023-08-14T16:53:27+0200",
+    comments = "version: 1.3.0.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
 )
 public class InventoryMappersImpl implements InventoryMappers {
 
     @Override
     public InventoryEntity map(Inventory source) {
 
-        InventoryEntity inventoryEntity = new InventoryEntity();
+        InventoryEntityBuilder inventoryEntity = InventoryEntity.builder();
 
         if ( source != null ) {
             if ( source.getItemCode() != null ) {
-                inventoryEntity.setItemCode( Long.parseLong( source.getItemCode() ) );
+                inventoryEntity.itemCode( Long.parseLong( source.getItemCode() ) );
             }
-            inventoryEntity.setName( source.getName() );
-            inventoryEntity.setUnitPrice( source.getUnitPrice() );
-            inventoryEntity.setQuantity( source.getQuantity() );
+            inventoryEntity.name( source.getName() );
+            inventoryEntity.unitPrice( source.getUnitPrice() );
+            inventoryEntity.quantity( source.getQuantity() );
         }
 
-        return inventoryEntity;
+        return inventoryEntity.build();
     }
 
     @Override

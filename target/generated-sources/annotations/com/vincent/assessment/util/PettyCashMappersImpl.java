@@ -8,8 +8,8 @@ import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-08-14T09:37:25+0200",
-    comments = "version: 1.3.0.Final, compiler: javac, environment: Java 11.0.16.1 (Oracle Corporation)"
+    date = "2023-08-14T16:53:27+0200",
+    comments = "version: 1.3.0.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
 )
 public class PettyCashMappersImpl implements PettyCashMappers {
 

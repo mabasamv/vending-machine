@@ -3,6 +3,8 @@ package com.vincent.assessment;
 import com.vincent.assessment.model.MoneyType;
 import com.vincent.assessment.model.PettyCash;
 import com.vincent.assessment.model.PurchaseResponse;
+import com.vincent.assessment.persistance.entity.InventoryEntity;
+import com.vincent.assessment.persistance.entity.PettyCashEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +47,28 @@ public class TestBase {
 
         return pettyCashList;
     }
-/*    protected PurchaseRequest purchaseRequest() {
-        return PurchaseRequest.builder()
-                .
-                .build();
-    }*/
 
     protected PurchaseResponse purchaseResponseOK() {
         return PurchaseResponse.builder()
                 .responseMessage("Purchase successful")
                 .change(5)
+                .build();
+    }
+
+    protected InventoryEntity inventory() {
+        return InventoryEntity.builder()
+                .itemCode(1L)
+                .name("name")
+                .unitPrice(10)
+                .quantity(1)
+                .build();
+    }
+
+    protected PettyCashEntity pettyCash() {
+        return PettyCashEntity.builder()
+                .id(1L)
+                .denomination("R1")
+                .totalAmount(250)
                 .build();
     }
 }

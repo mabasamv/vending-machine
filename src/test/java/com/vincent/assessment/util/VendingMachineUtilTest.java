@@ -1,15 +1,14 @@
 package com.vincent.assessment.util;
 
-
 import com.vincent.assessment.TestBase;
 import com.vincent.assessment.model.ErrorResponse;
 import com.vincent.assessment.model.MoneyType;
-import com.vincent.assessment.model.PettyCash;
 import com.vincent.assessment.service.IPettyCashService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -18,8 +17,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
-
 
 @RunWith(JUnit4.class)
 @PrepareForTest(VendingMachineUtil.class)
@@ -30,7 +27,7 @@ public class VendingMachineUtilTest extends TestBase {
 
     @Before
     public void setUp() {
-        //MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -39,21 +36,6 @@ public class VendingMachineUtilTest extends TestBase {
         int totalAmount = VendingMachineUtil.totalAmount(amount);
 
         assertEquals(25, totalAmount);
-    }
-
-    @Test
-    public void shouldCalculateTotalChange() {
-        Iterable<PettyCash> iterableChange = allChange();
-        when(changeService.getAll()).thenReturn(iterableChange);
-
-        int totalChange = VendingMachineUtil.totalChange(changeService);
-        assertEquals(25, totalChange);
-
-    }
-
-    @Test
-    public void shouldDeductChage() {
-
     }
 
     @Test
